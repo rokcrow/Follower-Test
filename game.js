@@ -24,18 +24,37 @@ window.Game = new function(){
 
   this.start = function(username) {
     this.username = username;
+    var that = this;
     $.jsonp({
 			url: 'https://api.twitter.com/1/friends/ids.json?callback=?&screen_name=' + this.username,
 			success: function(data) {
 				var user_ids = data.ids
-				var random_ids = this.getRandom(user_ids, 10);
-				this.random_ids = random_ids;
+				var random_ids = that.getRandom(user_ids, 10);
+				that.random_ids = random_ids;
       },
       error: function() {
       	alert("There was an error. We couldn't find the people you follow");
       }
 		});
 	};
+	
+	this.getRandom = function (user_ids, cant) {
+    var length = user_ids.length;
+    var numbers = [];
+    for (i = 0; i < cant; i++){
+        do {
+            var n = Math.floor((Math.random()*length)+1); 
+            var found = false;
+            for (j = 0; j < numbers.length; j++) {
+                if (numbers[j] == n) {
+                    found = true;
+                }
+            }
+        }while (found);
+        numbers.push(n);
+    }
+    return numbers;
+  };
 		
 	this.getTweets = function(user_ids) {
 		for(id in user_ids) {
