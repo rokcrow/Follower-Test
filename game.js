@@ -1,100 +1,90 @@
 window.Game = new function(){
 	this.username = '';
-	this.data = [ 
-		{
-			user: { id: 1, username: 'alexishevia' },
-			tweets: [
-				{ id: 11, text: "Este es un tweet de mentira" },
-				{ id: 12, text: "Follower Test is the shiznit!" },
-			]
-		},
-		{
-			user: { id: 2, username: 'walexis' },
-			tweets: [
-				{ id: 21, text: "Yo soy el verdadero Alexis Hevia" },
-				{ id: 22, text: "Follower Test sucks!" },
-			]
-		},
-		{
-			user: { id: 3, username: 'rogelio' },
-			tweets: [
-				{ id: 31, text: "Yo no tengo nada que ver con los Alexos" },
-				{ id: 32, text: "Tengo otro tweet pa seguir la tradición" },
-			]
-		}
-	]
-	this.answers = [
-		{ user_id: 1, tweet_id: 11 },
-		{ user_id: 2, tweet_id: 21 },
-		{ user_id: 3, tweet_id: 31 }
-	]
+	this.n_to_select = 10;
+	this.all_ids;
+	this.selected_ids = [];
+	this.data = [];
+	this.attempts = 0;
+	this.answers = [];
 
   this.start = function(username) {
     this.username = username;
     var that = this;
     $.jsonp({
 			url: 'https://api.twitter.com/1/friends/ids.json?callback=?&screen_name=' + this.username,
-			success: function(data) {
-				window.data = data;
-				var user_ids = data.ids
-				var random_ids = that.getRandom(user_ids, 10);
-				that.data = that.getData(random_ids);
+			success: function(result) {
+				that.all_ids = result.ids;
+        that.loadData();
       },
       error: function() {
-      	alert("There was an error. We couldn't find your 'following' list.");
+      	alert("There was an error loading the data. Please make sure the username is correct.");
       }
 		});
 	};
-	
-	this.getRandom = function (user_ids, cant) {
-    var length = user_ids.length;
-    var numbers = [];
-    var ids = [];
-    for (i = 0; i < cant; i++){
-        do {
-            var n = Math.floor((Math.random()*length)+1); 
-            var found = false;
-            for (j = 0; j < numbers.length; j++) {
-                if (numbers[j] == n) {
-                    found = true;
-                }
-            }
-        }while (found);
-        ids.push(user_ids[n]);
-        numbers.push(n);
-    }
-    return ids;
-  };
-		
-	this.getData = function(user_ids) {
-		var data = [];
-		$.each(user_ids, function(index, user_id) {
-			var user_data = { user: {}, tweets: [] }
-			var url = 'https://api.twitter.com/1/statuses/user_timeline.json?callback=?&count=10&user_id=' + user_id;
-			console.log(url);
+
+	this.loadData = function() {
+		if(this.selected_ids.length < this.n_to_select || this.attempts > 30) {
+			this.attempts++;
+			var user_id = this.getRandomUserId(this.all_ids, this.selected_ids);
+			var that = this;
 			$.jsonp({
-				url: url,
+				url: 'https://api.twitter.com/1/statuses/user_timeline.json?callback=?&count=10&user_id=' + user_id,
 				success: function(result) {
-					console.log('user_timeline success');
-					console.log(result);
+					var user_data = { user: {}, tweets: [] }
 					user_data.user = {id: result[0].user.id, username: result[0].user.screen_name}
 					$.each(result, function(index, tweet) {
 						user_data.tweets.push({id: tweet.id, text: tweet.text});
 					});
-					data.push(user_data);
+					if(user_data.tweets.length > 0) {
+						that.selected_ids.push(user_id);
+						that.data.push(user_data);
+					}
 				},
-				error: function(xhr) {
-					console.log('user_timeline error');
+				complete: function(xhr) {
+					that.loadData();
 				}
 			});
-		});
-		return data;
+		}
+		else {
+			console.log('ready');
+		}
 	};
 	
-	this.grade = function (data, answers) {
+	this.getRandomUserId = function(user_ids, used) {
+		var length = user_ids.length;
+		var user_id = null;
+		do {
+        var n = Math.floor((Math.random()*length)+1);
+        user_id = user_ids[n];
+        var found = false;
+        for (i = 0; i < used.length; i++) {
+          if (used[i] == user_id) { 
+          	found = true;
+          }
+        }
+    } while (found);
+    return user_id;
+	};
+	
+	this.setAnswer = function(user_id, tweet_id) {
+		this.removeAnswer(user_id);
+		this.answers.push({ user_id: user_id, tweet_id: tweet_id });
+	};
+	
+	this.removeAnswer = function(user_id) {
+	  var that = this;
+		$.each(this.answers, function(index, answer) {
+		  if (answer.user_id == user_id) {
+		    that.answers.splice(index, 1);
+		  }
+		}); 
+	};
+	
+	this.grade = function () {
     var correct_ans = 0;
-    $.each(answers, function(i, answer) {
-      $.each(data, function(j, person) {
+    var that = this;
+    $.each(this.answers, function(i, answer) {
+      $.each(that.data, function(j, person) {
         if (person.user.id == answer.user_id) {
           $.each(person.tweets, function(k, tweet) {
             if(answer.tweet_id == tweet.id) {
@@ -106,7 +96,5 @@ window.Game = new function(){
     });
     return correct_ans;
   }
-  
-  this.grade(this.data, this.answers);
 
 }
