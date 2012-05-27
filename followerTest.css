@@ -1,4 +1,4 @@
-#contenedor1{
+#timeline{
 background: #6B7EFA;
 }
 
@@ -33,4 +33,8 @@ float:left;
 p{
 margin: 0px;
 
+}
+
+#modal, #timeline, #loading {
+display: none;
 }

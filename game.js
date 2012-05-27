@@ -28,12 +28,14 @@ window.Game = new function(){
 			var user_id = this.getRandomUserId(this.all_ids, this.selected_ids);
 			var that = this;
 			$.jsonp({
-				url: 'https://api.twitter.com/1/statuses/user_timeline.json?callback=?&count=10&user_id=' + user_id,
+				url: 'https://api.twitter.com/1/statuses/user_timeline.json?callback=?&count=20&user_id=' + user_id,
 				success: function(result) {
 					var user_data = { user: {}, tweets: [] }
 					user_data.user = {id: result[0].user.id, username: result[0].user.screen_name}
 					$.each(result, function(index, tweet) {
-						user_data.tweets.push({id: tweet.id, text: tweet.text});
+						if(tweet.text[0] != '@') {
+							user_data.tweets.push({id: tweet.id, text: tweet.text});
+						}
 					});
 					if(user_data.tweets.length > 0) {
 						that.selected_ids.push(user_id);
@@ -46,7 +48,7 @@ window.Game = new function(){
 			});
 		}
 		else {
-			console.log('ready');
+			window.load_users(this.data);
 		}
 	};
 	

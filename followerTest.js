@@ -1,9 +1,21 @@
- $('document').ready(function() {
-	$('img').qtip(
-	{
-		id: 'modal', // Since we're only creating one modal, give it an ID so we can style it
+window.load_users = function(data) {
+ 	$.each(data, function(index, user_data) {
+ 		var htmlclass = (index % 2) ? 'tweet2' : 'tweet1';
+ 		tweet = 
+ 			'<div class="' + htmlclass + '">' +
+ 				'<img src="egg.png" alt="imagen" width="80px" height="80px" />' +
+        '<p>' + user_data.tweets[0].text + '</p>' +        
+      '</div>'
+    $('#contenedorTimeline').append(tweet);
+ 	});
+ 	$('#loading, #timeline').toggle();
+ 	window.load_qtip();
+ }
+ 
+ window.load_qtip = function() {
+ 	$('img').qtip({
 		content: {
-			text: $('div:hidden'),
+			text: $('#modal'),
 			title: {
 				text: 'Modal qTip',
 				button: true
@@ -22,4 +34,13 @@
 		hide: false,
 		style: 'ui-tooltip-light ui-tooltip-rounded'
 	});
+ }
+ 
+ $('document').ready(function() {
+ 	$('form').submit(function(evt) {
+ 		evt.preventDefault();
+ 		$(evt.target).toggle();
+ 		$('#loading').toggle();
+ 		Game.start($('input.username').val());
+ 	});
 });
