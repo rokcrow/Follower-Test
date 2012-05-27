@@ -1,0 +1,36 @@
+#contenedor1{
+background: #6B7EFA;
+}
+
+#contenedorTimeline{
+background: #92C1F0;
+margin: 10% 10% 10% 10%; 
+
+}
+
+body{
+background: #B2ECED;
+}
+
+.tweet1{
+height:100px;
+clear:both;
+background: #3A82B5;
+}
+
+.tweet2{
+height:100px;
+clear:both;
+background: #E1EFF0;
+}
+
+img{
+margin:  10px 10px 10px 10px;
+float:left;
+}
+
+
+p{
+margin: 0px;
+
+}
