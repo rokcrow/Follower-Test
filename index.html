@@ -16,34 +16,72 @@
       background-color: #C0DEED;
     }
     .container-fluid {
-      max-width:50em;
+      max-width:40em;
       margin: auto;
+    }
+    .well {
+      padding: 0;
     }
     h1 {
       font-size: 1.5em;
       text-align: center;
-      margin-top: 0.4em;
-      margin-bottom: 1em;
+      margin: 0.4em 0;
     }
     form {
       text-align: center;
-      margin-bottom: 0.5em;
+      margin-bottom: 1em;
     }
-    label {
+    form label {
       font-size: 1.4em;
       display: inline;
       position: relative;
       top: -0.15em;
     }
-    input[type="text"] {
+    form input[type="text"] {
       font-size: 1.1em;
       padding: 0.4em;
       max-width: 60%;
     }
-    .btn {
+    form .btn {
       font-size: 1.2em;
       position: relative;
       top: -0.28em;
+    }
+    .tweet {
+      min-height: 51px;
+      border-top: 0.1em solid #E8E8E8;
+      width: 92%;
+      padding: 1em 4%;
+    }
+    .tweet .avatar {
+      text-align: center;
+      width: 10%;
+      float: left;
+      padding-top: 0.3em;
+    }
+    .tweet .avatar img {
+      max-width: 100%;
+      border-radius: 5px;
+    }
+    .tweet .info {
+      float:right;
+      width: 88%;
+    }
+    .tweet .info .name {
+      font-weight:bold;
+      font-size: 1.1em;
+    }
+    .tweet .info .username {
+      color: #999;
+      font-size: 0.97em;
+    }
+    @media (max-width: 480px) { 
+      .tweet .avatar {
+        width: 17%;
+      }
+      .tweet .info {
+        width: 81%;
+      }
     }
   </style>
 </head>
@@ -85,6 +123,38 @@
         <button type="submit" class="btn btn-primary" 
           data-loading-text="loading..." >Go</button>
       </form>
+      <div class="tweets">
+        <div class="tweet row-fluid">
+          <div class="avatar">
+            <img src="img/egg.png">
+          </div>
+          <div class="info">
+            <p>
+              <span class="name">Qué hacer hoy Panamá</span>
+              <span class="username">‏@QuehacerhoyPTY</span>
+            </p>
+            <p>#Congreso de cuentistas y críticos en la @UTPpanama del 5 al 8Jun +Info http://bit.ly/JqqXaZ #Panama</p>
+          </div>
+        </div>
+        <div class="tweet row-fluid">
+          <div class="avatar">
+            <img src="img/egg.png">
+          </div>
+          <div class="info">
+            <p>Innovación Panamá ‏@InnovacionPma</p>
+            <p>Uno d nuestros proyectos a destacar en el #TechnologyDay @Geored507, Geosemántica en el país x crowdsourcing</p>
+          </div>
+        </div>
+        <div class="tweet row-fluid">
+          <div class="avatar">
+            <img src="img/egg.png">
+          </div>
+          <div class="info">
+            <p>Ciudad del Saber ‏@cdspanama</p>
+            <p>Commitment to #bullying prevention in Latin America http://bit.ly/N7XZum @PlanAmericas @unicef_lac @WorldVision</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   </div>
